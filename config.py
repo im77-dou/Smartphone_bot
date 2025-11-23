@@ -6,11 +6,14 @@ load_dotenv()
 
 
 class Config:
-
+    # tg bot
     BOT_TOKEN: str = os.getenv("BOT_TOKEN", "")
 
+    # openai
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
+    # database
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_PORT: int = int(os.getenv("DB_PORT", "5432"))
     DB_NAME: str = os.getenv("DB_NAME", "smartphone_bot")
@@ -24,6 +27,13 @@ class Config:
             f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
         )
 
+    # environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+
+    # level logging
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+
+    # validation
     def validate(self):
         errors = []
 
@@ -49,8 +59,9 @@ if __name__ == "__main__":
     try:
         config.validate()
         print("Configuration is valid.")
-        print(f"Bot Token: {config.BOT_TOKEN}")
-        print(f"OpenAI API Key: {config.OPENAI_API_KEY}")
-        print(f"Database URL: {config.database_url}")
+        print(f"Bot Token: {config.BOT_TOKEN[:10]}...")
+        print(f"OpenAI API Key: {config.OPENAI_API_KEY[:10]}...")
+        print(f"Database: {config.DB_NAME}")
+        print(f"Environment: {config.ENVIRONMENT}")
     except ValueError as e:
         print(f"Error: {e}")
