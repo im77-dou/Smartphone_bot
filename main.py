@@ -8,6 +8,8 @@ from config import config
 
 from bot.handlers import user, smartphone
 
+from bot.middlewares.logging import LoggingMiddleware
+
 
 def setup_logging():
     logging.basicConfig(
@@ -36,6 +38,8 @@ async def main():
     )
 
     dp = Dispatcher()
+
+    dp.message.middleware(LoggingMiddleware())
     dp.include_router(user.router)
     dp.include_router(smartphone.router)
 
