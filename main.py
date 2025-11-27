@@ -5,7 +5,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from config import config
-from bot.handlers import user
+
+from bot.handlers import user, smartphone
 
 
 def setup_logging():
@@ -36,6 +37,7 @@ async def main():
 
     dp = Dispatcher()
     dp.include_router(user.router)
+    dp.include_router(smartphone.router)
 
     logger.info("Bot started.")
 
