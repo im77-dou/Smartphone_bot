@@ -30,6 +30,8 @@ async def cmd_help(message: Message):
         "<code>/start</code> - Запустить бота\n"
         "<code>/help</code> - Справка по командам\n"
         "<code>/cancel</code> - Отменить текущее действие\n"
+        "<code>/compare</code> - Сравнить смартфоны\n"
+        "<code>/recommend</code> - Подобрать смартфон\n"
         "<b>Общение:</b>\n"
         "Просто напишите сообщение, и я помогу вам."
     )
