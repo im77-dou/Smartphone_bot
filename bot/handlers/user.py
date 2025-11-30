@@ -2,6 +2,8 @@ from aiogram import Router, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
+from bot.keyboards.reply import get_main_keyboard
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,7 +21,8 @@ async def cmd_start(message: Message):
     )
 
     await message.answer(
-        f"Привет, <b>{message.from_user.first_name}</b>!"
+        f"Привет, <b>{message.from_user.first_name}</b>!",
+        reply_markup=get_main_keyboard()
     )
 
 
@@ -40,6 +43,21 @@ async def cmd_help(message: Message):
 @router.message(Command("cancel"))
 async def cmd_cancel(message: Message):
     await message.answer("Операция отменена.")
+
+
+@router.message(F.text == "Подобрать смартфон")
+async def on_recommend_button(message: Message):
+    await message.answer("Подобрать смартфон...")
+
+
+@router.message(F.text == "Сравнить смартфоны")
+async def on_compare_button(message: Message):
+    await message.answer("Сравнить смартфоны...")
+
+
+@router.message(F.text == "Помощь")
+async def on_help_button(message: Message):
+    await cmd_help(message)
 
 
 @router.message(F.text.startswith("/"))
