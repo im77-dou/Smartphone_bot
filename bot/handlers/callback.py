@@ -33,7 +33,7 @@ async def callback_recommend(callback: CallbackQuery):
         reply_markup=get_smartphone_menu()
     )
 
-    await callback.answer()
+    await callback.answer("Not available", show_alert=True)
 
 
 @router.callback_query(F.data == "menu:compare")
@@ -65,7 +65,7 @@ async def callback_start_recommend(callback: CallbackQuery):
         reply_markup=get_back_button()
     )
 
-    await callback.answer()
+    await callback.answer("Not available")
 
 
 @router.callback_query(F.data == "smartphone:popular")
@@ -75,4 +75,4 @@ async def callback_popular(callback: CallbackQuery):
         reply_markup=get_back_button()
     )
 
-    await callback.answer()
+    await callback.answer("Not available")
