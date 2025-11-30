@@ -50,8 +50,8 @@ async def callback_compare(callback: CallbackQuery):
 @router.callback_query(F.data == "menu:help")
 async def callback_help(callback: CallbackQuery):
     await callback.message.edit_text(
-        "Используете меню для навигации по боту.\n",
-        'Кнопка "Назад" вернет в главное меню.',
+        "Используйте меню для навигации по боту.\n\n",
+        "Кнопка <Назад> вернет в главное меню.",
         reply_markup=get_back_button()
     )
 
