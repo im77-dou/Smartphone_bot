@@ -42,6 +42,16 @@ async def cmd_cancel(message: Message):
     await message.answer("Операция отменена.")
 
 
+@router.message(F.text.startswith("/"))
+async def unknown_command(message: Message):
+    logger.warning(f"User @{message.from_user.id} typed unknown command: {message.text}")
+
+    await message.answer(
+        f"Неизвестная команда: {message.text}\n\n"
+        f"Пожалуйста, используйте команду /help для получения справки."
+    )
+
+
 @router.message(F.text)
 async def on_text_message(message: Message):
 
