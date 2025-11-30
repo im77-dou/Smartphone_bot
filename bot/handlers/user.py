@@ -3,6 +3,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from bot.keyboards.reply import get_main_keyboard
+from bot.keyboards.inline import get_main_menu
 
 import logging
 
@@ -22,7 +23,7 @@ async def cmd_start(message: Message):
 
     await message.answer(
         f"Привет, <b>{message.from_user.first_name}</b>!",
-        reply_markup=get_main_keyboard()
+        reply_markup=get_main_menu()
     )
 
 
@@ -43,6 +44,15 @@ async def cmd_help(message: Message):
 @router.message(Command("cancel"))
 async def cmd_cancel(message: Message):
     await message.answer("Операция отменена.")
+
+
+@router.message(Command("menu"))
+async def cmd_menu(message: Message):
+    await message.answer(
+        "<b>Главное меню:</b>\n\n"
+        "Выберите действие:",
+        reply_markup=get_main_menu()
+    )
 
 
 @router.message(F.text == "Подобрать смартфон")
