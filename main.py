@@ -3,6 +3,7 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand
 
 from config import config
 
@@ -17,6 +18,21 @@ def setup_logging():
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+
+
+async def set_bot_commands(bot: Bot):
+    logger = logging.getLogger(__name__)
+
+    commands = [
+        BotCommand(command="/start", description="Запустить бота"),
+        BotCommand(command="/help", description="Справка по командам"),
+        BotCommand(command="/cancel", description="Отменить действие"),
+        BotCommand(command="/compare", description="Сравнить смартфоны"),
+        BotCommand(command="/recommend", description="Подобрать смартфон")
+    ]
+    await bot.set_my_commands(commands)
+
+    logger.info("Bot commands set.")
 
 
 async def main():
@@ -38,6 +54,7 @@ async def main():
     )
 
     dp = Dispatcher()
+    await set_bot_commands(bot)
 
     dp.message.middleware(LoggingMiddleware())
     dp.include_router(user.router)
