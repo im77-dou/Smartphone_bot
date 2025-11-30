@@ -5,7 +5,8 @@ from aiogram.types import CallbackQuery
 from bot.keyboards.inline import (
     get_main_menu,
     get_smartphone_menu,
-    get_back_button
+    get_back_button,
+    get_reccomend_menu
 )
 
 
@@ -30,10 +31,10 @@ async def callback_recommend(callback: CallbackQuery):
     await callback.message.edit_text(
         "<b>Подбор смартфона</b>\n\n"
         "Выберите действие:",
-        reply_markup=get_smartphone_menu()
+        reply_markup=get_reccomend_menu()
     )
 
-    await callback.answer("Not available", show_alert=True)
+    await callback.answer()
 
 
 @router.callback_query(F.data == "menu:compare")
@@ -65,7 +66,7 @@ async def callback_start_recommend(callback: CallbackQuery):
         reply_markup=get_back_button()
     )
 
-    await callback.answer("Not available")
+    await callback.answer("Not available", show_alert=True)
 
 
 @router.callback_query(F.data == "smartphone:popular")
@@ -75,4 +76,40 @@ async def callback_popular(callback: CallbackQuery):
         reply_markup=get_back_button()
     )
 
-    await callback.answer("Not available")
+    await callback.answer("Not available", show_alert=True)
+
+
+@router.callback_query(F.data == "recommend:smart")
+async def callback_smart_recommend(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "<b>Умный подбор с помощью ChatGPT</b>\n\n"
+        "Я задам вам несколько вопросов и подберу"
+        "смартфон для вас.",
+        reply_markup=get_back_button()
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "recommend:manual")
+async def callback_manual_recommend(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "<b>Подбор по параметрам</b>\n\n"
+        "Укажите жалаемые параметры:\n"
+        "1. Бюджет\n"
+        "2. Бренд\n"
+        "3. Характеристики\n",
+        reply_markup=get_back_button()
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "recommend:popular")
+async def callback_popular_recommend(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "Популярные модели...",
+        reply_markup=get_back_button()
+    )
+
+    await callback.answer()
