@@ -26,6 +26,8 @@ async def set_bot_commands(bot: Bot):
     commands = [
         BotCommand(command="/start", description="Запустить бота"),
         BotCommand(command="/help", description="Справка по командам"),
+        BotCommand(command="/menu", description="Главное меню"),
+        BotCommand(command="/settings", description="Настройки"),
         BotCommand(command="/cancel", description="Отменить действие"),
         BotCommand(command="/compare", description="Сравнить смартфоны"),
         BotCommand(command="/recommend", description="Подобрать смартфон")

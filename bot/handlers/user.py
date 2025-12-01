@@ -3,7 +3,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from bot.keyboards.reply import get_main_keyboard
-from bot.keyboards.inline import get_main_menu
+from bot.keyboards.inline import get_main_menu, get_settings_menu
 
 import logging
 
@@ -33,9 +33,11 @@ async def cmd_help(message: Message):
         "<b>Доступные команды:</b>\n"
         "<code>/start</code> - Запустить бота\n"
         "<code>/help</code> - Справка по командам\n"
+        "<code>/menu</code> - Главное меню\n"
         "<code>/cancel</code> - Отменить текущее действие\n"
         "<code>/compare</code> - Сравнить смартфоны\n"
         "<code>/recommend</code> - Подобрать смартфон\n"
+        "<code>/settings</code> - Настройки\n"
         "<b>Общение:</b>\n"
         "Просто напишите сообщение, и я помогу вам."
     )
@@ -52,6 +54,17 @@ async def cmd_menu(message: Message):
         "<b>Главное меню:</b>\n\n"
         "Выберите действие:",
         reply_markup=get_main_menu()
+    )
+
+
+@router.message(Command("settings"))
+async def cmd_settings(message: Message):
+    logger.info(f"User {message.from_user.id} requested settings.")
+
+    await message.answer(
+        "<b>Настройки:</b>\n\n"
+        "Выберите действие:",
+        reply_markup=get_settings_menu()
     )
 
 

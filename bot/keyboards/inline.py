@@ -65,3 +65,22 @@ def get_back_button(
     builder.button(text=text, callback_data=callback_data)
 
     return builder.as_markup()
+
+
+def get_settings_menu():
+    builder = InlineKeyboardBuilder()
+
+    builder.button(
+        text="Язык",
+        callback_data="settings:language"
+    )
+    builder.button(
+        text="Очистить историю",
+        callback_data="settings:clear_history"
+    )
+    builder.button(
+        text="Назад в меню",
+        callback_data="menu:main"
+    )
+
+    return builder.adjust(1).as_markup()

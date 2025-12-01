@@ -6,7 +6,8 @@ from bot.keyboards.inline import (
     get_main_menu,
     get_smartphone_menu,
     get_back_button,
-    get_reccomend_menu
+    get_reccomend_menu,
+    get_settings_menu
 )
 
 
@@ -113,3 +114,38 @@ async def callback_popular_recommend(callback: CallbackQuery):
     )
 
     await callback.answer()
+
+
+@router.callback_query(F.data == "settings:main")
+async def callback_settings_main(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "<b>Настройки:</b>\n\n"
+        "Выберите действие:",
+        reply_markup=get_settings_menu()
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "settings:language")
+async def callback_settings_language(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "<b>Язык интерфейса</b>\n\n"
+        "Выберите язык:\n"
+        "• Русский\n"
+        "• English",
+        reply_markup=get_back_button("settings:main", "Назад к настройкам")
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "settings:clear_history")
+async def callback_settings_clear_history(callback: CallbackQuery):
+    await callback.message.edit_text(
+        "<b>История очищена</b>\n\n"
+        "Ваши предыдущие диалоги были удалены.",
+        reply_markup=get_back_button("settings:main", "Назад к настройкам")
+    )
+
+    await callback.answer("История очищена", show_alert=True)
