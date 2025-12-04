@@ -6,6 +6,7 @@ from bot.keyboards.inline import get_main_menu, get_settings_menu
 
 from utils.validators import is_valid_budget, extract_budget_from_text
 from utils.error_handler import handle_errors
+from utils.messages import Messages
 
 import logging
 
@@ -24,8 +25,9 @@ async def cmd_start(message: Message):
         f"started the bot."
     )
 
+    user_name = message.from_user.first_name
     await message.answer(
-        f"Привет, <b>{message.from_user.first_name}</b>!",
+        Messages.welcome_user(user_name),
         reply_markup=get_main_menu()
     )
 
@@ -48,7 +50,7 @@ async def cmd_help(message: Message):
 
 @router.message(Command("cancel"))
 async def cmd_cancel(message: Message):
-    await message.answer("Операция отменена.")
+    await message.answer(Messages.INFO_CANCELED)
 
 
 @router.message(Command("menu"))

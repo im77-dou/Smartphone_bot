@@ -7,7 +7,7 @@ from aiogram.types import BotCommand
 
 from config import config
 
-from bot.handlers import user, smartphone, callback
+from bot import handlers
 
 from bot.middlewares.logging import LoggingMiddleware
 
@@ -59,9 +59,9 @@ async def main():
     await set_bot_commands(bot)
 
     dp.message.middleware(LoggingMiddleware())
-    dp.include_router(callback.router)
-    dp.include_router(user.router)
-    dp.include_router(smartphone.router)
+    dp.include_router(handlers.callbacks.router)
+    dp.include_router(handlers.user.router)
+    dp.include_router(handlers.smartphone.router)
 
     logger.info("Bot started.")
 
