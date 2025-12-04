@@ -5,6 +5,7 @@ from aiogram.types import Message
 from bot.keyboards.inline import get_main_menu, get_settings_menu
 
 from utils.validators import is_valid_budget, extract_budget_from_text
+from utils.error_handler import handle_errors
 
 import logging
 
@@ -15,6 +16,7 @@ router = Router(name="user")
 
 
 @router.message(CommandStart())
+@handle_errors
 async def cmd_start(message: Message):
 
     logger.info(
