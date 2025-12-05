@@ -1,4 +1,3 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
@@ -81,6 +80,34 @@ def get_settings_menu():
     builder.button(
         text="Назад в меню",
         callback_data="menu:main"
+    )
+
+    return builder.adjust(1).as_markup()
+
+
+def get_cancel_keyboard():
+    builder = InlineKeyboardBuilder()
+
+    builder.button(
+        text="Отменить",
+        callback_data="action:cancel"
+    )
+    return builder.as_markup()
+
+
+def get_back_and_cancel_keyboard(
+        back_callback: str = "menu:main",
+        back_text: str = "Назад",
+):
+    builder = InlineKeyboardBuilder()
+
+    builder.button(
+        text=back_text,
+        callback_data=back_callback
+    )
+    builder.button(
+        text="Отменить",
+        callback_data="action:cancel"
     )
 
     return builder.adjust(1).as_markup()
