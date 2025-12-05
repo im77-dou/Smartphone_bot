@@ -1,3 +1,3 @@
-from . import user, smartphone, callbacks
+from . import user, smartphone, callbacks, recommendation
 
-__all__ = ['user', 'smartphone', 'callbacks']
+__all__ = ['user', 'smartphone', 'callbacks', 'recommendation']

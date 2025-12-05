@@ -60,6 +60,7 @@ async def main():
 
     dp.message.middleware(LoggingMiddleware())
     dp.include_router(handlers.callbacks.router)
+    dp.include_router(handlers.recommendation.router)
     dp.include_router(handlers.user.router)
     dp.include_router(handlers.smartphone.router)
 
