@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from bot.states import SmartphoneRecommendation
-from bot.keyboards.inline import InlineKeyboardBuilder, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from utils.validators import is_valid_budget
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ async def process_brand(callback: CallbackQuery, state: FSMContext):
     brand_name = get_brand_display_name(brand)
 
     await callback.message.edit_text(
-        f"Подобрать смартфон под бюджет: {budget}$ для {brand_name}",
+        f"<b>Подобрать смартфон под бюджет:</b> {budget}$ для {brand_name}\n\n"
         "Что для вас наиболее важно в смартфоне?",
         reply_markup=keyboard
     )
@@ -124,7 +124,7 @@ def get_features_keyboard():
     SmartphoneRecommendation.waiting_for_features,
     F.data.startswith("feature:")
 )
-async def procces_feature_toggle(
+async def process_feature_toggle(
         callback: CallbackQuery,
         state: FSMContext
 ):
@@ -139,7 +139,7 @@ async def procces_feature_toggle(
     await state.update_data(features=features)
     logger.info(f"User {callback.from_user.id} selected features: {features}.")
 
-    keyboard = get_features_keyboard_with_marks()
+    keyboard = get_features_keyboard_with_marks(features)
 
     try:
         await callback.message.edit_reply_markup(
@@ -164,8 +164,10 @@ def get_features_keyboard_with_marks(selected_features):
         ("Память", "feature:storage")
     ]
 
-    for feature_code, feature_name in features:
-        text = f"{'Готово' if feature_code in selected_features else ''}{feature_name}"
+    for feature_name, feature_code in features:
+        feature_id = feature_code.split(":", 1)[1]
+        mark = "✅ " if feature_id in selected_features else ""
+        text = f"{mark}{feature_name}"
 
         builder.button(
             text=text,
@@ -193,7 +195,7 @@ async def finish_recommendation(
     brand = data["brand"]
     features = data.get("features", [])
     logger.info(
-        f"User {callback.from_user.id} completed recommendation. ",
+        f"User {callback.from_user.id} completed recommendation. "
         f"Budget: {budget}, Brand: {brand}, Features: {features}"
         )
 
@@ -201,9 +203,9 @@ async def finish_recommendation(
     features_text = get_features_display(features)
 
     result_text = (
-        "Смартфон подобран, подходящий для вас:\n",
-        f"Бюджет: {budget}$\n",
-        f"Бренд: {brand_name}\n",
+        "Смартфон подобран, подходящий для вас:\n"
+        f"Бюджет: {budget}$\n"
+        f"Бренд: {brand_name}\n"
         f"Характеристики: {features_text}"
     )
     await callback.message.edit_text(result_text)
@@ -236,6 +238,6 @@ async def cancel_recommendation(message: Message, state: FSMContext):
     await state.clear()
 
     await message.answer(
-        "Подбор смартфона отменен.\n\n",
+        "Подбор смартфона отменен.\n\n"
         "Чтобы начать заново, используйте команду /recommend."
     )
