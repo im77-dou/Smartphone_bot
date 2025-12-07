@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot.states import SmartphoneComparison
 from bot.keyboards.inline import get_main_menu, get_cancel_keyboard
+from utils.validators import validate_comparison_input
 
 logger = logging.getLogger(__name__)
 router = Router(name="comparison")
@@ -48,25 +49,24 @@ async def callback_start_comparison(
 
 @router.message(SmartphoneComparison.waiting_for_first_model)
 async def process_first_model(message: Message, state: FSMContext):
-    model_name = message.text.strip()
+    validation_result = validate_comparison_input(message.text)
 
-    if len(model_name) < 2:
+    if not validation_result["is_valid"]:
+        error_msg = validation_result["error_message"]
+        logger.warning(f"User {message.from_user.id} entered invalid 1st model"
+                       f" name: {message.text[:50]}. Error: {error_msg}."
+                       )
+
         await message.answer(
-            "Название слишком короткое.\n\n"
-            "Введите название первого смартфона:",
-            reply_markup=get_cancel_keyboard()
-        )
-        return
-    if len(model_name) > 50:
-        await message.answer(
-            "Название слишком длинное.\n\n"
-            "Введите название первого смартфона:",
+            f"<b>Ошибка: {error_msg}</b>\n\n"
+            f"Попробуйте еще раз.",
             reply_markup=get_cancel_keyboard()
         )
         return
 
-    await state.update_data(first_model=model_name)
-    logger.info(f"User {message.from_user.id} set first model: {model_name}.")
+    cleaned_name = validation_result["cleaned_name"]
+    await state.update_data(first_model=cleaned_name)
+    logger.info(f"User {message.from_user.id} set first model: {cleaned_name}")
 
     await state.set_state(SmartphoneComparison.waiting_for_second_model)
 
@@ -78,49 +78,40 @@ async def process_first_model(message: Message, state: FSMContext):
 
 @router.message(SmartphoneComparison.waiting_for_second_model)
 async def process_second_model(message: Message, state: FSMContext):
-    model_name = message.text.strip()
-
-    if len(model_name) < 2:
-        await message.answer(
-            "Название слишком короткое.\n\n"
-            "Введите название второго смартфона:",
-            reply_markup=get_cancel_keyboard()
-        )
-        return
-    if len(model_name) > 50:
-        await message.answer(
-            "Название слишком длинное.\n\n"
-            "Введите название второго смартфона:",
-            reply_markup=get_cancel_keyboard()
-        )
-        return
-
     data = await state.get_data()
     first_model = data.get("first_model", "")
 
-    if model_name.lower() == first_model.lower():
+    validation_result = validate_comparison_input(
+        message.text,
+        first_model=first_model
+    )
+    if not validation_result["is_valid"]:
+        error_msg = validation_result["error_message"]
+        logger.warning(f"User {message.from_user.id} entered invalid 2nd model"
+                       f" name: {message.text[:50]}. Error: {error_msg}."
+                       )
         await message.answer(
-            "Вы выбрали один и тот же смартфон.\n\n"
-            "Введите название второго смартфона:",
+            f"<b>Ошибка: {error_msg}</b>\n\n"
+            f"Попробуйте еще раз.",
             reply_markup=get_cancel_keyboard()
         )
         return
 
-    await state.update_data(second_model=model_name)
-    logger.info(f"User {message.from_user.id} set second model: {model_name}.")
+    cleaned_name = validation_result["cleaned_name"]
+    await state.update_data(second_model=cleaned_name)
+    logger.info(f"User {message.from_user.id} completed comparison. "
+                f"Models: {first_model}, {cleaned_name}."
+                )
 
     result_text = (
-        "<b>Сравнение смартфонов:</b>\n\n"
-        f"<b>Первый смартфон:</b> {first_model}\n"
-        f"<b>Второй смартфон:</b> {model_name}"
+        f"<b>Сравнение смартфонов:</b>\n\n"
+        f"1. {first_model}\n"
+        f"2. {cleaned_name}"
     )
-
-    await message.answer(
-        result_text,
-        reply_markup=get_main_menu()
-    )
+    await message.answer(result_text, reply_markup=get_main_menu())
 
     await state.clear()
+    logger.info(f"User {message.from_user.id} cleared state.")
 
 
 @router.callback_query(

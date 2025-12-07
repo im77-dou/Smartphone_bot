@@ -58,3 +58,67 @@ def sanitize_text(text: str, max_length: int = 1000):
     text = ''.join(char for char in text if char.isprintable() or char in '\n\t')
 
     return text.strip()
+
+
+def is_valid_smartphone_name(text: str):
+    if not text:
+        return False, None, "Значение не может быть пустым"
+
+    cleaned = text.strip()
+    if not cleaned or cleaned.isspace():
+        return False, None, "Значение не может быть пустым"
+
+    if len(cleaned) < 2 or len(cleaned) > 50:
+        return False, None, "Некорректное название смартфона"
+
+    forbidden_chars = ['<', '>', '/', '\\', '{', '}', '[', ']', '|']
+    for char in forbidden_chars:
+        if char in cleaned:
+            return False, None, "Некорректное название смартфона"
+
+    if cleaned.isdigit():
+        return False, None, "Некорректное название смартфона"
+
+    return True, cleaned, None
+
+
+def are_models_different(model1, model2):
+    if not model1 or not model2:
+        return False, "Одна из моделей не указана."
+
+    normalized1 = " ".join(model1.split()).lower()
+    normalized2 = " ".join(model2.split()).lower()
+
+    if normalized1 == normalized2:
+        return False, "Модели совпадают."
+
+    return True, None
+
+
+def validate_comparison_input(
+        text,
+        first_model: str | None = None
+):
+    is_valid, cleaned, error = is_valid_smartphone_name(text)
+
+    if not is_valid:
+        return {
+            "is_valid": False,
+            "cleaned_name": None,
+            "error_message": error
+        }
+
+    if first_model:
+        are_diff, diff_error = are_models_different(first_model, cleaned)
+        if not are_diff:
+            return {
+                "is_valid": False,
+                "cleaned_name": None,
+                "error_message": diff_error
+            }
+
+    return {
+        "is_valid": True,
+        "cleaned_name": cleaned,
+        "error_message": None
+    }
