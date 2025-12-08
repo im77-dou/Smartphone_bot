@@ -495,7 +495,7 @@ def get_preview_keyboard():
 async def confirm_and_show_result(callback: CallbackQuery, state: FSMContext):
     logger.info(f"User {callback.from_user.id} confirmed smart recommendation")
 
-    await state.set_data(SmartRecommendation.showing_results)
+    await state.set_state(SmartRecommendation.showing_results)
 
     result_text = (
         "<b>Результат:</b>\n\n"
@@ -508,7 +508,7 @@ async def confirm_and_show_result(callback: CallbackQuery, state: FSMContext):
 
     await state.clear()
 
-    await callback.answer("Подбор завершен.", show_alert=True)
+    await callback.answer("Подбор завершен.")
 
 
 @router.callback_query(

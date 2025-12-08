@@ -80,18 +80,6 @@ async def callback_popular(callback: CallbackQuery):
     await callback.answer("Not available", show_alert=True)
 
 
-@router.callback_query(F.data == "recommend:smart")
-async def callback_smart_recommend(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "<b>Умный подбор с помощью ChatGPT</b>\n\n"
-        "Я задам вам несколько вопросов и подберу"
-        "смартфон для вас.",
-        reply_markup=get_back_button()
-    )
-
-    await callback.answer()
-
-
 @router.callback_query(F.data == "recommend:manual")
 async def callback_manual_recommend(callback: CallbackQuery):
     await callback.message.edit_text(
