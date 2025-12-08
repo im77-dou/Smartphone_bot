@@ -10,6 +10,7 @@ from config import config
 from bot import handlers
 
 from bot.middlewares.logging import LoggingMiddleware
+from bot.middlewares.fsm_logging import FSMLoggingMiddleware
 
 
 def setup_logging():
@@ -59,6 +60,9 @@ async def main():
     await set_bot_commands(bot)
 
     dp.message.middleware(LoggingMiddleware())
+    dp.message.middleware(FSMLoggingMiddleware())
+    dp.callback_query.middleware(FSMLoggingMiddleware())
+
     dp.include_router(handlers.callbacks.router)
     dp.include_router(handlers.smart_recommend.router)
     dp.include_router(handlers.recommendation.router)
