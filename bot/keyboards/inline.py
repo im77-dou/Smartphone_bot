@@ -34,27 +34,6 @@ def get_reccomend_menu():
     return builder.adjust(1).as_markup()
 
 
-def get_smartphone_menu():
-    builder = InlineKeyboardBuilder()
-
-    builder.button(
-        text="Начать подбор",
-        callback_data="smartphone:start_recommend"
-        )
-    builder.button(
-        text="Популярные модели",
-        callback_data="smartphone:popular"
-    )
-    builder.button(
-        text="Назад в меню",
-        callback_data="menu:main"
-    )
-
-    builder.adjust(1)
-
-    return builder.as_markup()
-
-
 def get_back_button(
         callback_data: str = "menu:main",
         text: str = "Назад"

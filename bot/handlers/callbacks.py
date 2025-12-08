@@ -1,15 +1,16 @@
 import logging
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
 
+from bot.states import SmartphoneComparison
+from bot.keyboards.inline import get_cancel_keyboard
 from bot.keyboards.inline import (
     get_main_menu,
-    get_smartphone_menu,
     get_back_button,
     get_reccomend_menu,
     get_settings_menu
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -39,14 +40,18 @@ async def callback_recommend(callback: CallbackQuery):
 
 
 @router.callback_query(F.data == "menu:compare")
-async def callback_compare(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "<b>Сравнение смартфонов</b>\n\n"
-        "Выберите",
-        reply_markup=get_back_button()
-    )
+async def callback_compare(callback: CallbackQuery, state: FSMContext):
+    logger.info(f"User {callback.from_user.id} started comparison.")
 
-    await callback.answer()
+    await state.clear()
+
+    await state.set_state(SmartphoneComparison.waiting_for_first_model)
+
+    await callback.message.edit_text(
+        "<b>Сравнение смартфонов:</b>\n\n"
+        "Введите название первого смартфона:",
+        reply_markup=get_cancel_keyboard()
+    )
 
 
 @router.callback_query(F.data == "menu:help")
@@ -54,50 +59,6 @@ async def callback_help(callback: CallbackQuery):
     await callback.message.edit_text(
         "Используйте меню для навигации по боту.\n\n",
         "Кнопка <Назад> вернет в главное меню.",
-        reply_markup=get_back_button()
-    )
-
-    await callback.answer()
-
-
-@router.callback_query(F.data == "smartphone:start_recommend")
-async def callback_start_recommend(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "Подбор смартфона...",
-        reply_markup=get_back_button()
-    )
-
-    await callback.answer("Not available", show_alert=True)
-
-
-@router.callback_query(F.data == "smartphone:popular")
-async def callback_popular(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "Популярные модели...",
-        reply_markup=get_back_button()
-    )
-
-    await callback.answer("Not available", show_alert=True)
-
-
-@router.callback_query(F.data == "recommend:manual")
-async def callback_manual_recommend(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "<b>Подбор по параметрам</b>\n\n"
-        "Укажите жалаемые параметры:\n"
-        "1. Бюджет\n"
-        "2. Бренд\n"
-        "3. Характеристики\n",
-        reply_markup=get_back_button()
-    )
-
-    await callback.answer()
-
-
-@router.callback_query(F.data == "recommend:popular")
-async def callback_popular_recommend(callback: CallbackQuery):
-    await callback.message.edit_text(
-        "Популярные модели...",
         reply_markup=get_back_button()
     )
 
